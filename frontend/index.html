@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GURU</title>
+</head>
+<body>
+    <h1>GURU</h1>
+    
+    <!-- Text input -->
+    <textarea id="userInput" rows="4" cols="50" placeholder="Type your message..."></textarea><br>
+    <button onclick="sendText()">Send</button>
+    
+    <hr>
+    
+    <!-- PDF upload -->
+    <input type="file" id="pdfInput" accept=".pdf"><br>
+    <button onclick="sendPDF()">Upload PDF</button>
+    
+    <hr>
+    
+    <!-- Response area -->
+    <div id="response"></div>
+
+    <script>
+        async function sendText() {
+            const input = document.getElementById("userInput").value;
+            const response = await fetch("http://localhost:8000/chat", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({content: input})
+            });
+            const data = await response.json();
+            document.getElementById("response").innerText = data.response;
+        }
+
+        async function sendPDF() {
+            const fileInput = document.getElementById("pdfInput");
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const response = await fetch("http://localhost:8000/upload-pdf", {
+                method: "POST",
+                body: formData
+            });
+            const data = await response.json();
+            document.getElementById("response").innerText = data.response;
+        }
+    </script>
+</body>
+</html>
