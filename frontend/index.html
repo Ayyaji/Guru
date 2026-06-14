@@ -98,7 +98,7 @@
             text.value = "";
             console.log(text.value);
             const userdiv = document.createElement("div");
-            userdiv.textContent = "you:" + userMessage;
+            userdiv.textContent = userMessage;
             chatBox.appendChild(userdiv);
             const response = await fetch("http://localhost:8000/chat", {
                 method: "POST",
@@ -109,7 +109,7 @@
             const guruDiv = document.createElement("div");
             userdiv.classList.add("user-msg");
             guruDiv.classList.add("guru-msg");
-            guruDiv.textContent = "GURU" + data.response;
+            guruDiv.textContent = data.response;
             chatBox.appendChild(guruDiv);
         }
 
@@ -124,7 +124,7 @@
             const data = await response.json();
             const guruDiv = document.createElement("div");
             guruDiv.classList.add("guru-msg");
-            guruDiv.textContent = "GURU" + data.response;
+            guruDiv.textContent = data.response;
             chatBox.appendChild(guruDiv);
         }
     </script>
