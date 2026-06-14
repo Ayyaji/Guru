@@ -1,51 +1,131 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
 <head>
     <title>GURU</title>
+    <style>
+        body {
+            color: white;
+            font-size: 16px;
+            font-family: sans-serif;
+            margin: 0;
+            background-color: #1a1a1a;
+            padding: 20px;
+        }
+
+        #chat-box {
+            height: 60vh;
+            overflow-y: auto;
+            border: 1px solid #2d2d2d;
+            background-color: #111;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        #user-input {
+            height: 80px;
+            width: 60vw;
+            background-color: #2d2d2d;
+            border: 1px solid #444;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            resize: none;
+        }
+
+        #submit {
+            height: 80px;
+            width: 100px;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #upload-btn {
+            height: 40px;
+            width: 120px;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        #pdf-input {
+            color: white;
+        }
+        .user-msg {
+            text-align: right;
+            background-color: #2563eb;
+            padding: 8px 12px;
+            border-radius: 12px;
+            margin: 5px 0;
+            max-width: 60%;
+            margin-left: auto;
+        }
+
+        .guru-msg {
+            text-align: left;
+            background-color: #2d2d2d;
+            color: #60a5fa;
+            padding: 8px 12px;
+            border-radius: 12px;
+            margin: 5px 0;
+            max-width: 60%;
+        }
+    </style>
 </head>
 <body>
     <h1>GURU</h1>
-    
-    <!-- Text input -->
-    <textarea id="userInput" rows="4" cols="50" placeholder="Type your message..."></textarea><br>
-    <button onclick="sendText()">Send</button>
-    
-    <hr>
-    
-    <!-- PDF upload -->
-    <input type="file" id="pdfInput" accept=".pdf"><br>
-    <button onclick="sendPDF()">Upload PDF</button>
-    
-    <hr>
-    
-    <!-- Response area -->
-    <div id="response"></div>
-
+    <div id="chat-box"></div>
+    <textarea id="user-input"></textarea>
+    <button id="submit">send</button>
+    <input type="file" accept=".pdf" id="pdf-input" />
+    <button id="upload-btn">upload</button>
     <script>
-        async function sendText() {
-            const input = document.getElementById("userInput").value;
+        const chatBox = document.getElementById("chat-box");
+        const text = document.getElementById("user-input");
+        const sendbtn = document.getElementById("submit");
+        const file = document.getElementById("upload-btn");
+        sendbtn.addEventListener("click", sendMessage);
+        file.addEventListener("click", uploadPdf);
+
+        async function sendMessage() {
+            const userMessage = text.value;
+            text.value = "";
+            console.log(text.value);
+            const userdiv = document.createElement("div");
+            userdiv.textContent = "you:" + userMessage;
+            chatBox.appendChild(userdiv);
             const response = await fetch("http://localhost:8000/chat", {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({content: input})
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ content: userMessage }),
             });
             const data = await response.json();
-            document.getElementById("response").innerText = data.response;
+            const guruDiv = document.createElement("div");
+            userdiv.classList.add("user-msg");
+            guruDiv.classList.add("guru-msg");
+            guruDiv.textContent = "GURU" + data.response;
+            chatBox.appendChild(guruDiv);
         }
 
-        async function sendPDF() {
-            const fileInput = document.getElementById("pdfInput");
-            const file = fileInput.files[0];
+        async function uploadPdf() {
+            const theFile = document.getElementById("pdf-input").files[0];
             const formData = new FormData();
-            formData.append("file", file);
-
+            formData.append("file", theFile);
             const response = await fetch("http://localhost:8000/upload-pdf", {
                 method: "POST",
-                body: formData
+                body: formData,
             });
             const data = await response.json();
-            document.getElementById("response").innerText = data.response;
+            const guruDiv = document.createElement("div");
+            guruDiv.classList.add("guru-msg");
+            guruDiv.textContent = "GURU" + data.response;
+            chatBox.appendChild(guruDiv);
         }
     </script>
 </body>
-</html>

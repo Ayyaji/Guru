@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 from datetime import datetime
 
+
 load_dotenv("backend/.env")
 
 client=MongoClient(os.getenv("MONGO_URI"))

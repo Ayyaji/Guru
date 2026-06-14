@@ -4,7 +4,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, Messa
 import httpx
 from dotenv import load_dotenv
 
-load_dotenv("backend/.env")
+load_dotenv(".env")
 TOKEN = os.getenv("TELEGRAM_TOKEN")
 
 
@@ -13,7 +13,7 @@ async def start(update:Update, context:ContextTypes.DEFAULT_TYPE):
 
 async def handle_message(update:Update, context:ContextTypes.DEFAULT_TYPE):
     user_message=update.message.text
-    async with httpx.AsyncClient(timeout=60) as client:
+    async with httpx.AsyncClient(timeout=180) as client:
             response= await client.post("http://localhost:8000/chat",json={"content":user_message})
 
 
@@ -28,5 +28,9 @@ def main():
 
     print("Wait madu Yochane Madi Heltini...")
     app.run_polling()
+    print(f"DEBUG: Token loaded is: {TOKEN[:10]}...") 
 if __name__=="__main__":
     main()
+
+if not TOKEN:
+    raise ValueError("TELEGRAM_TOKEN not found in .env file!")
