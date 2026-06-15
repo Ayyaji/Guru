@@ -27,21 +27,23 @@ def get_gmail_service():
     return build("gmail", "v1", credentials=creds)
 
 
-def read_email(services, max_results=5):
+def get_emails(service, max_results=5):
     results = (
-        services.users().messages().list(userId="me", maxResults=max_results).execute()
+        service.users().messages().list(userId="me", maxResults=max_results).execute()
     )
     messages = results.get("messages", [])
+    emails = []
     for msg in messages:
-        txt = services.users().messages().get(userId="me", id=msg["id"]).execute()
-        payload = txt["payload"]
-        headers = payload["headers"]
+        txt = service.users().messages().get(userId="me", id=msg["id"]).execute()
+        headers = txt["payload"]["headers"]
+        email = {}
         for header in headers:
             if header["name"] == "Subject":
-                print("Subject:", header["value"])
+                email["subject"] = header["value"]
             if header["name"] == "From":
-                print("From", header["value"])
-        print("---------")
+                email["from"] = header["value"]
+        emails.append(email)
+    return emails
 
 
 def compose_email(services, to, subject, body, cc=None):
@@ -50,13 +52,4 @@ def compose_email(services, to, subject, body, cc=None):
     msg["subject"] = subject
     raw = base64.urlsafe_b64encode(msg.as_bytes()).decode()
     print(f"To:{to}\n Subject:{subject}\n Body:{body} ")
-    confirm = input("Send(y/n):")
-    if confirm != "y":
-        return
     services.users().messages().send(userId="me", body={"raw": raw}).execute()
-
-
-if __name__ == "__main__":
-    service = get_gmail_service()
-    read_email(service)
-    compose_email(service, "ayyajiraghavas@gmail.com", "Test", "Hello from GURU")

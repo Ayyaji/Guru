@@ -1,10 +1,13 @@
+import os
 import sys
 
 from groq import Groq
 
-sys.path.append("C:\\Users\\user\\Projects\\guru")
+sys.path.insert(0, os.path.abspath("C:\\Users\\user\\Projects\\guru"))
 
 import PyPDF2
+from backend.extract import parse_and_execute
+from backend.gmail import compose_email, get_emails, get_gmail_service
 from Database.db import load_history, save_message
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, UploadFile
@@ -12,7 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 load_dotenv()
-
+client = Groq()
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -32,19 +35,19 @@ async def chat(message: ChatInput):
     user_message = message.content
     save_message("user", user_message)
     conversation_history.append({"role": "user", "content": user_message})
-    client = Groq()
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=[
             {
                 "role": "system",
-                "content": "You are GURU, Raghava's personal assistant. Raghava is a CS engineering student from Thirthahalli getting ready for the software world. He loves philosophy, books, movies, and solving NeetCode problems. He has crazy goals — building a university like Takshashila, creating PersonaOS, and restoring Bharat's knowledge systems. Talk straight, be honest, use humor and be straight to point , weak English is fine, never be fake. Respond naturally to what he says. Don't repeat yourself. Challenge him when wrong.Don't mention any thing while discussion I will tell what to talk.Talk like human don't ask every time[get back to PersonaOS. You were planning to incorporate traditional Indian concepts into a modern OS. That's a bold move! Can you tell me more about what specifically from ancient Indian knowledge systems you'd like to include? Is it the concept of Atman and Brahman, or perhaps the idea of Swarupa (the inherent nature of reality)? The more I understand your vision, the better I can help.",
+                "content": "You are GURU, Raghava's personal assistant...",
             },
             *conversation_history,
         ],
     )
     result = response.choices[0].message.content
     save_message("assistant", result)
+    parse_and_execute(result)
     return {"response": result}
 
 
@@ -65,6 +68,25 @@ async def upload_pdf(file: UploadFile = File(...)):
         ],
     )
     return {"response": response.choices[0].message.content}
+
+
+class EmailInput(BaseModel):
+    to: str
+    subject: str
+    body: str
+
+
+@app.get("/read-email")
+async def fetch_emails():
+    service = get_gmail_service()
+    return {"emails": get_emails(service)}
+
+
+@app.post("/send-email")
+async def send_email(data: EmailInput):
+    service = get_gmail_service()
+    compose_email(service, data.to, data.subject, data.body)
+    return {"status": "sent"}
 
 
 if __name__ == "__main__":
