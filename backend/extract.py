@@ -5,14 +5,7 @@ import sys
 from groq import Groq
 
 sys.path.insert(0, os.path.abspath("C:\\Users\\user\\Projects\\guru"))
-from backend.gmail import compose_email, get_gmail_service
-from Database.db import load_history, save_message
-from dotenv import load_dotenv
-from fastapi import FastAPI, File, UploadFile
-from fastapi.middleware.cors import CORSMiddleware
-
-load_dotenv()
-app = FastAPI()
+from backend.gmail import compose_email, get_emails, get_gmail_service
 
 
 def parse_and_execute(guru_response):
@@ -40,3 +33,8 @@ def parse_and_execute(guru_response):
     if result["action"] == "send_email":
         service = get_gmail_service()
         compose_email(service, result["to"], result["subject"], result["body"])
+    elif result["action"] == "read_email":
+        service = get_gmail_service()
+        emails = get_emails(service)
+        return emails
+    return None

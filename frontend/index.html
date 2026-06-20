@@ -2,79 +2,122 @@
 <head>
     <title>GURU</title>
     <style>
-        body {
-            color: white;
-            font-size: 16px;
-            font-family: sans-serif;
+        * {
+            box-sizing: border-box;
             margin: 0;
-            background-color: #1a1a1a;
-            padding: 20px;
+            padding: 0;
+        }
+
+        body {
+            font-family: sans-serif;
+            background-color: #0f0f0f;
+            color: #e5e5e5;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 0;
+        }
+
+        h1 {
+            font-size: 15px;
+            font-weight: 500;
+            padding: 14px 18px;
+            border-bottom: 0.5px solid #2a2a2a;
+            background: #1a1a1a;
         }
 
         #chat-box {
-            height: 60vh;
+            flex: 1;
             overflow-y: auto;
-            border: 1px solid #2d2d2d;
-            background-color: #111;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 8px;
+            padding: 20px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #0f0f0f;
         }
 
-        #user-input {
-            height: 80px;
-            width: 60vw;
-            background-color: #2d2d2d;
-            border: 1px solid #444;
-            color: white;
-            padding: 10px;
-            border-radius: 8px;
-            resize: none;
-        }
-
-        #submit {
-            height: 80px;
-            width: 100px;
-            background-color: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        #upload-btn {
-            height: 40px;
-            width: 120px;
-            background-color: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        #pdf-input {
-            color: white;
-        }
         .user-msg {
-            text-align: right;
-            background-color: #2563eb;
-            padding: 8px 12px;
-            border-radius: 12px;
-            margin: 5px 0;
-            max-width: 60%;
-            margin-left: auto;
+            align-self: flex-end;
+            background: #2563eb;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 16px;
+            border-bottom-right-radius: 4px;
+            max-width: 70%;
+            font-size: 14px;
+            line-height: 1.6;
         }
 
         .guru-msg {
-            text-align: left;
-            background-color: #2d2d2d;
-            color: #60a5fa;
-            padding: 8px 12px;
+            align-self: flex-start;
+            background: #1e1e1e;
+            color: #e5e5e5;
+            border: 0.5px solid #2a2a2a;
+            padding: 10px 14px;
+            border-radius: 16px;
+            border-bottom-left-radius: 4px;
+            max-width: 70%;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Bottom input bar */
+        #input-bar {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            padding: 12px 14px;
+            border-top: 0.5px solid #2a2a2a;
+            background: #1a1a1a;
+        }
+
+        #user-input {
+            flex: 1;
+            min-height: 22px;
+            max-height: 120px;
+            background: #2a2a2a;
+            border: 0.5px solid #3a3a3a;
+            color: #e5e5e5;
+            padding: 10px 14px;
             border-radius: 12px;
-            margin: 5px 0;
-            max-width: 60%;
+            resize: none;
+            font-size: 14px;
+            font-family: sans-serif;
+            line-height: 1.5;
+            outline: none;
+        }
+
+        #submit {
+            width: 36px;
+            height: 36px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        #submit:hover {
+            background: #1d4ed8;
+        }
+
+        #upload-btn {
+            width: 36px;
+            height: 36px;
+            background: transparent;
+            border: 0.5px solid #3a3a3a;
+            border-radius: 50%;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 </head>
@@ -92,7 +135,12 @@
         const file = document.getElementById("upload-btn");
         sendbtn.addEventListener("click", sendMessage);
         file.addEventListener("click", uploadPdf);
-
+        text.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
         async function sendMessage() {
             const userMessage = text.value;
             text.value = "";

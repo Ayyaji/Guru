@@ -1,13 +1,10 @@
+import os
 import sqlite3
+import sys
 
-conn = sqlite3.connect("chat_history")
+sys.path.insert(0, os.path.abspath("C:\\Users\\user\\Projects\\guru"))
+conn = sqlite3.connect("Database/chat_history")
 cursor = conn.cursor()
-# cursor.execute(    "insert into history (role,message,time) values('user',' hello GURU','2026-06-15 10:00')")
-# cursor.execute("delete  from history where message='GURU'")
-# cursor.execute("DELETE FROM history")
-# cursor.execute("UPDATE history SET role='user' WHERE role='Raghava'")
-cursor.execute("select * from history")
-print(cursor.fetchall())
-
+cursor.execute("DELETE FROM history")
 conn.commit()
 conn.close()

@@ -1,0 +1,70 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body-equiv { font-family: var(--font-sans); }
+.app { display: flex; flex-direction: column; height: 520px; background: var(--color-background-tertiary); border-radius: var(--border-radius-lg); border: 0.5px solid var(--color-border-tertiary); overflow: hidden; }
+.topbar { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 0.5px solid var(--color-border-tertiary); background: var(--color-background-primary); }
+.topbar-icon { width: 30px; height: 30px; border-radius: 50%; background: var(--color-background-info); display: flex; align-items: center; justify-content: center; }
+.topbar-icon i { font-size: 16px; color: var(--color-text-info); }
+.topbar-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+.topbar-sub { font-size: 12px; color: var(--color-text-secondary); }
+.chat-area { flex: 1; overflow-y: auto; padding: 20px 18px; display: flex; flex-direction: column; gap: 14px; }
+.msg-row { display: flex; gap: 8px; align-items: flex-end; }
+.msg-row.user { flex-direction: row-reverse; }
+.avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--color-background-info); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 12px; font-weight: 500; color: var(--color-text-info); }
+.avatar.user-av { background: var(--color-background-secondary); color: var(--color-text-secondary); }
+.bubble { max-width: 72%; padding: 10px 14px; border-radius: 16px; font-size: 14px; line-height: 1.6; color: var(--color-text-primary); }
+.bubble.guru { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-bottom-left-radius: 4px; }
+.bubble.user { background: #2563eb; color: white; border-bottom-right-radius: 4px; }
+.input-area { padding: 12px 14px; border-top: 0.5px solid var(--color-border-tertiary); background: var(--color-background-primary); display: flex; flex-direction: column; gap: 8px; }
+.input-row { display: flex; align-items: flex-end; gap: 8px; }
+.file-row { display: flex; align-items: center; gap: 8px; }
+.file-badge { display: flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); background: var(--color-background-secondary); font-size: 12px; color: var(--color-text-secondary); }
+.file-badge i { font-size: 14px; }
+.input-wrap { flex: 1; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); background: var(--color-background-secondary); display: flex; align-items: flex-end; padding: 8px 12px; gap: 8px; }
+.input-wrap textarea { flex: 1; background: transparent; border: none; outline: none; resize: none; font-size: 14px; color: var(--color-text-primary); font-family: var(--font-sans); line-height: 1.5; max-height: 100px; min-height: 22px; }
+.input-wrap textarea::placeholder { color: var(--color-text-tertiary); }
+.icon-btn { width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--color-text-secondary); flex-shrink: 0; }
+.icon-btn:hover { background: var(--color-background-secondary); }
+.send-btn { width: 34px; height: 34px; border-radius: 50%; border: none; background: #2563eb; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+.send-btn i { font-size: 16px; color: white; }
+.send-btn:hover { background: #1d4ed8; }
+</style>
+
+<div class="app">
+  <div class="topbar">
+    <div class="topbar-icon"><i class="ti ti-sparkles" aria-hidden="true"></i></div>
+    <div>
+      <div class="topbar-title">GURU</div>
+      <div class="topbar-sub">AI Assistant</div>
+    </div>
+  </div>
+
+  <div class="chat-area">
+    <div class="msg-row">
+      <div class="avatar"><i class="ti ti-sparkles" style="font-size:13px;" aria-hidden="true"></i></div>
+      <div class="bubble guru">Hello! I'm GURU. Upload a PDF or ask me anything.</div>
+    </div>
+    <div class="msg-row user">
+      <div class="avatar user-av">R</div>
+      <div class="bubble user">What is attention mechanism in transformers?</div>
+    </div>
+    <div class="msg-row">
+      <div class="avatar"><i class="ti ti-sparkles" style="font-size:13px;" aria-hidden="true"></i></div>
+      <div class="bubble guru">Attention allows the model to weigh the importance of different tokens when encoding a sequence — each token attends to all others and aggregates context weighted by relevance scores.</div>
+    </div>
+  </div>
+
+  <div class="input-area">
+    <div class="file-row">
+      <button class="icon-btn" title="Upload PDF"><i class="ti ti-paperclip" style="font-size:18px;" aria-hidden="true"></i></button>
+      <div class="file-badge"><i class="ti ti-file-type-pdf"></i> notes.pdf</div>
+    </div>
+    <div class="input-row">
+      <div class="input-wrap">
+        <textarea placeholder="Ask GURU anything…" rows="1"></textarea>
+      </div>
+      <button class="send-btn" aria-label="Send"><i class="ti ti-arrow-up"></i></button>
+    </div>
+  </div>
+</div>

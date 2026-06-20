@@ -4,7 +4,6 @@ import sys
 from groq import Groq
 
 sys.path.insert(0, os.path.abspath("C:\\Users\\user\\Projects\\guru"))
-
 import PyPDF2
 from backend.extract import parse_and_execute
 from backend.gmail import compose_email, get_emails, get_gmail_service
@@ -32,6 +31,7 @@ class ChatInput(BaseModel):
 @app.post("/chat")
 async def chat(message: ChatInput):
     conversation_history = load_history(limit=20)
+    print("DEBUG history:", conversation_history)
     user_message = message.content
     save_message("user", user_message)
     conversation_history.append({"role": "user", "content": user_message})
@@ -40,14 +40,25 @@ async def chat(message: ChatInput):
         messages=[
             {
                 "role": "system",
-                "content": "You are GURU, Raghava's personal assistant...",
+                "content": """You are GURU — Raghava's personal assistant. You talk to Raghava and only Raghava.
+
+                Raghava is a CS engineering student. He likes philosophy, books, and building things.
+
+                Rules:
+                - Talk straight. No filler.
+                - Never fake-execute actions. If an action needs to happen (send email, etc.), output only the structured intent — nothing else.
+                - Don't end messages with suggestions to talk about something else.
+                - Never say "I sent the email" — you don't send emails, the system does.""",
             },
             *conversation_history,
         ],
     )
     result = response.choices[0].message.content
+    extrate_data = parse_and_execute(result)
+    print("DEBUG extracted_data:", extrate_data)
+    if extrate_data:
+        result += f"\n\nInbox: {extrate_data}"
     save_message("assistant", result)
-    parse_and_execute(result)
     return {"response": result}
 
 
