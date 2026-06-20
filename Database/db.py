@@ -10,7 +10,9 @@ def save_message(role, message):
         (role, message),
     )
     conn.commit()
+    new_id = cursor.lastrowid
     conn.close()
+    return new_id
 
 
 def load_history(limit=20):
